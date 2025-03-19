@@ -68,3 +68,10 @@ head(normalized_df)
 #boxplot before and after to verify if normalization worked
 boxplot(excel_data[,-1])
 boxplot(normalized_df[,-1])
+
+# Export the training dataset to an Excel file
+write_xlsx(split_data$train, "training_dataset.xlsx")
+# Export the testing dataset to an Excel file
+write_xlsx(split_data$test, "testing_dataset.xlsx")
+
+
