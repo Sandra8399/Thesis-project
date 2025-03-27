@@ -63,8 +63,8 @@ quantile_normalization <- function(train_df, test_df) {
   
   # Set the correct column names for the normalized data frames
   #"gene needed, otherwise gene symbol names infiltrate the actual dataset"
-  colnames(normalized_train_df) <- c("Gene", colnames(train_df))  # Ensure first column is "Gene"
-  colnames(normalized_test_df) <- c("Gene", colnames(test_df))    # Ensure first column is "Gene"
+  colnames(normalized_train_df) <- c("Gene_symbol", colnames(train_df))  # Ensure first column is "Gene"
+  colnames(normalized_test_df) <- c("Gene_symbol", colnames(test_df))    # Ensure first column is "Gene"
   
   return(list(train = normalized_train_df, test = normalized_test_df))
 }
