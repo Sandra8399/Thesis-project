@@ -14,11 +14,11 @@ head(excel_data)
 # Function to split dataset into training (70%) and testing (30%)
 split_dataset <- function(df, train_ratio = 0.7) {
   set.seed(123)
-  total_rows <- nrow(df)
-  train_indices <- sample(total_rows, size = round(train_ratio * total_rows))
+  total_cols <- ncol(df)
+  train_indices <- sample(total_cols, size = round(train_ratio * total_cols))
   
-  train_set <- df[train_indices, , drop = FALSE]  
-  test_set <- df[-train_indices, , drop = FALSE]  
+  train_set <- df[, train_indices, drop = FALSE]  
+  test_set <- df[, -train_indices, drop = FALSE]  
   
   return(list(train = train_set, test = test_set))
 }
@@ -46,7 +46,7 @@ quantile_normalization <- function(train_df, test_df) {
   sorted_ord_test <- apply(test_df, 2, order)  # Get sorted indices
   sorted_data_test <- apply(test_df, 2, sort)#row means train data
   
-  normalized_test <- matrix(row_means[sorted_ord_test], ncol=ncol(train_df))
+  normalized_test <- matrix(row_means[sorted_ord_test], ncol=ncol(test_df))
   dimnames(normalized_test) <- dimnames(test_df)
   
   #Check if step 4 worked
@@ -77,10 +77,14 @@ normalized_data <- quantile_normalization(split_data$train, split_data$test)
 
 # Check output
 head(normalized_data$train)
+dim(test_data)
+dim(train_data)
 
 # Boxplot before and after normalization
-boxplot(as.matrix(excel_data), main = "Before Normalization")
-boxplot(as.matrix(normalized_data$train[,-1]), main = "After Normalization")
+#smaller font
+boxplot(as.matrix(excel_data), main = "Before Normalization", las=2)
+boxplot(as.matrix(normalized_data$train[,-1]), main = "After Normalization", las=2)
+
 
 # Export data
 write_xlsx(normalized_data$train, "normalized_training_dataset.xlsx")

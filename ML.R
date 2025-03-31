@@ -59,9 +59,15 @@ logistic_regression_train <- logistic_reg() %>%
 
 # Print model summary
 summary(logistic_regression_train$fit)
-
+dim(train_data_final)
+dim(test_data_final)
 #package, library
 lr_prediction_test <- predict(logistic_regression_train, new_data = test_data_final)
+summary(lr_prediction_test)
+
+#can run confusion matrix
+table(test_data_final$Label)
+#can tune hyperparameters
 
 #Random forest
 #install.packages("randomForest")

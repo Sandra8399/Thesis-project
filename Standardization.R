@@ -46,10 +46,18 @@ testing_scaled$Gene_symbol <- gene_symbol_test
 training_scaled <- training_scaled[, c("Gene_symbol", setdiff(colnames(training_scaled), "Gene_symbol"))]
 testing_scaled <- testing_scaled[, c("Gene_symbol", setdiff(colnames(testing_scaled), "Gene_symbol"))]
 
-
 head(training_scaled)
 
 summary(training_scaled)
+
+#histogram
+hist(training_data$`UTSW#32-IIIC`)
+hist(training_scaled$`UTSW#32-IIIC`)
+#density plot
+plot(density(training_data$`UTSW#32-IIIC`))
+plot(density(training_scaled$`UTSW#32-IIIC`))
+#both show mean, distribution is unchanged
+
 
 write_xlsx(training_scaled, "training_scaled_dataset.xlsx")
 write_xlsx(testing_scaled, "testing_scaled_dataset.xlsx")
