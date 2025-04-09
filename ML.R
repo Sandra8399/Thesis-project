@@ -46,9 +46,10 @@ rownames(test_data_t) <- colnames(test_data)[-1]  # Use the sample names as row 
 
 # Add the Label column (Ensure the number of rows matches between test_data_t and sample_labels)
 test_data_final <- cbind(test_data_t, Label = sample_labels$Label)  # Add Label column
+test_data_final$Label <- as.factor(test_data_final$Label)
 
-
-#Logistic regression
+# Logistic regression
+#can tune hyperparameters
 library(tidymodels)
 library(glmnet)
 
@@ -63,19 +64,84 @@ dim(train_data_final)
 dim(test_data_final)
 #package, library
 lr_prediction_test <- predict(logistic_regression_train, new_data = test_data_final)
+
+# Compare predicted results to real data
 summary(lr_prediction_test)
-
-#can run confusion matrix
 table(test_data_final$Label)
-#can tune hyperparameters
 
+#Confusion matrix
+library(caret)
+confusionMatrix(data=lr_prediction_test$.pred_class, reference = test_data_final$Label)
+
+
+# Remove all "-" characters and replace all "*" characters, so that RF can work
+clean_names <- function(x) {
+  x <- gsub("[^A-Za-z0-9*]", "", x)  # Remove all special characters except *
+  x <- gsub("\\*", "2", x)           # Replace * with 2
+  return(x)
+}
+
+# Columns & rows replacement
+colnames(train_data_final) <- clean_names(colnames(train_data_final))
+rownames(train_data_final) <- clean_names(rownames(train_data_final))
+
+# Repeat for testing
+colnames(test_data_final) <- clean_names(colnames(test_data_final))
+rownames(test_data_final) <- clean_names(rownames(test_data_final))
+
+
+#remove all - & * (dupes) from the genes, samples etc (special characters)
 #Random forest
-#install.packages("randomForest")
 library(randomForest)
 set.seed(123)
-random_forest_train <- randomForest(Label ~ ., #what is predicted, what do I put?
+random_forest_train <- randomForest(Label ~ .,
                                     data = train_data_final)
+summary(random_forest_train)
 
-rf_prediction_test <- predict(random_forest_train, newdata = test)
+rf_prediction_test <- predict(random_forest_train, newdata = test_data_final)
+
+summary(rf_prediction_test)
+table(test_data_final$Label)
+
+#Confusion matrix
+confusionMatrix(data=rf_prediction_test, reference = test_data_final$Label)
 
 #XGBoost
+library(xgboost)
+
+# Prepare for XGBoost
+# Extract labels
+train_labels <- train_data_final$Label
+test_labels  <- test_data_final$Label
+
+# Extract features (remove the label column)
+train_matrix <- as.matrix(train_data_final[, setdiff(names(train_data_final), "Label")])
+test_matrix  <- as.matrix(test_data_final[, setdiff(names(test_data_final), "Label")])
+
+# Create DMatrix objects
+dtrain <- xgb.DMatrix(data = train_matrix, label = train_labels)
+dtest  <- xgb.DMatrix(data = test_matrix, label = test_labels)
+
+# Run XGBoost
+xgb_model <- xgb.train(,
+  data = dtrain,
+  nrounds = 100,
+  watchlist = list(train = dtrain, eval = dtest),
+  early_stopping_rounds = 10,
+  print_every_n = 10
+)
+
+# Predict probabilities on the test set
+xgb_prediction_test <- predict(xgb_model, dtest)
+
+summary(xgb_prediction_test)
+table(test_data_final$Label)
+
+#Confusion matrix
+# Check factor levels
+levels(factor(xgb_prediction_test))
+levels(factor(test_data_final$Label))
+
+
+confusionMatrix(data=xgb_prediction_test, reference = test_data_final$Label)
+

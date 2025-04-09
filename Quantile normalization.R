@@ -77,11 +77,10 @@ normalized_data <- quantile_normalization(split_data$train, split_data$test)
 
 # Check output
 head(normalized_data$train)
-dim(test_data)
-dim(train_data)
 
 # Boxplot before and after normalization
 #smaller font
+par(mar = c(10, 4, 4, 2))
 boxplot(as.matrix(excel_data), main = "Before Normalization", las=2)
 boxplot(as.matrix(normalized_data$train[,-1]), main = "After Normalization", las=2)
 
