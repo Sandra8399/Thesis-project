@@ -111,37 +111,49 @@ library(xgboost)
 
 # Prepare for XGBoost
 # Extract labels
-train_labels <- train_data_final$Label
-test_labels  <- test_data_final$Label
+train_labels <- as.numeric(as.factor(train_data_final$Label)) - 1
+test_labels  <- as.numeric(as.factor(test_data_final$Label)) - 1
 
 # Extract features (remove the label column)
 train_matrix <- as.matrix(train_data_final[, setdiff(names(train_data_final), "Label")])
 test_matrix  <- as.matrix(test_data_final[, setdiff(names(test_data_final), "Label")])
 
+head(train_matrix)
+class(train_matrix)
+#class(train_matrix$kshviRK1210a)
+#class(train_matrix$Label)
+
 # Create DMatrix objects
 dtrain <- xgb.DMatrix(data = train_matrix, label = train_labels)
 dtest  <- xgb.DMatrix(data = test_matrix, label = test_labels)
 
+getinfo(dtrain, "label")  # returns the labels
+dim(dtrain)               # returns dimensions
+
+
 # Run XGBoost
-xgb_model <- xgb.train(,
+xgb_model <- xgboost(
   data = dtrain,
   nrounds = 100,
-  watchlist = list(train = dtrain, eval = dtest),
-  early_stopping_rounds = 10,
-  print_every_n = 10
+  objective = "binary:logistic",
+  eval_metric = "logloss"
 )
 
 # Predict probabilities on the test set
 xgb_prediction_test <- predict(xgb_model, dtest)
 
-summary(xgb_prediction_test)
+prediction <- as.numeric(xgb_prediction_test > 0.5)
+print(head(prediction))
+
+summary(prediction)
 table(test_data_final$Label)
 
 #Confusion matrix
-# Check factor levels
-levels(factor(xgb_prediction_test))
-levels(factor(test_data_final$Label))
+# Labels as 0/1
+labels <- as.numeric(as.factor(test_data_final$Label)) - 1
 
-
-confusionMatrix(data=xgb_prediction_test, reference = test_data_final$Label)
-
+# Confusion matrix
+confusionMatrix(
+  data = factor(prediction, levels = c(0, 1)),
+  reference = factor(labels, levels = c(0, 1))
+)
