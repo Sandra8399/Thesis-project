@@ -1,57 +1,78 @@
+# Import necessary libraries
 library(readxl)
 library(writexl)
-
-# Load datasets
-train_data <- read_excel("training_scaled_dataset.xlsx")
-test_data <- read_excel("testing_scaled_dataset.xlsx")
-
-# Identify sample names (excluding 'Gene_symbol')
-sample_status <- colnames(train_data)[-1]  
-
-# Identify whether samples are lymph node negative or positive
-status_binary <- ifelse(grepl("-IIIC$", sample_status), 0, 1)
-
-# Convert to a dataframe & transpose (Make sure to keep the labels in the correct format)
-sample_labels <- data.frame(Label = status_binary)
-
-# Transpose train_data so that samples are rows and genes are columns
-train_data_t <- as.data.frame(t(train_data[-1]))  # Exclude the 'Gene_symbol' column before transposing
-colnames(train_data_t) <- train_data$Gene_symbol  # Rename columns using Gene_symbol
-
-# Reset row names to avoid "V1, V2, ..." issue (using the sample names as row names)
-rownames(train_data_t) <- colnames(train_data)[-1]  # Use the sample names as row names
-
-# Add the Label column (Ensure the number of rows matches between train_data_t and sample_labels)
-train_data_final <- cbind(train_data_t, Label = sample_labels$Label)  # Add Label column
-
-train_data_final$Label <- as.factor(train_data_final$Label)
-
-# Repeat for testing datalibrary(readxl)
-
-# Identify sample names (excluding 'Gene_symbol')
-sample_status <- colnames(test_data)[-1]  
-
-# Identify whether samples are lymph node negative or positive
-status_binary <- ifelse(grepl("-IIIC$", sample_status), 0, 1)
-
-# Convert to a dataframe & transpose (Make sure to keep the labels in the correct format)
-sample_labels <- data.frame(Label = status_binary)
-
-# Transpose test_data so that samples are rows and genes are columns
-test_data_t <- as.data.frame(t(test_data[-1]))  # Exclude the 'Gene_symbol' column before transposing
-colnames(test_data_t) <- test_data$Gene_symbol  # Rename columns using Gene_symbol
-
-# Reset row names to avoid "V1, V2, ..." issue (using the sample names as row names)
-rownames(test_data_t) <- colnames(test_data)[-1]  # Use the sample names as row names
-
-# Add the Label column (Ensure the number of rows matches between test_data_t and sample_labels)
-test_data_final <- cbind(test_data_t, Label = sample_labels$Label)  # Add Label column
-test_data_final$Label <- as.factor(test_data_final$Label)
-
-# Logistic regression
-#can tune hyperparameters
 library(tidymodels)
 library(glmnet)
+library(caret)
+
+# Load datasets
+train_data_final <- read_excel("training_dataset_final.xlsx")
+test_data_final <- read_excel("testing_dataset_final.xlsx")
+
+# Make sure both datasets are dataframe
+train_data_final <- as.data.frame(train_data_final)
+test_data_final <- as.data.frame(test_data_final)
+
+# Make sure Label is a factor
+train_data_final$Label <- as.factor(train_data_final$Label)
+test_data_final$Label <- as.factor(test_data_final$Label)
+
+# Test hyper parameters
+# Logistic regession
+
+# Define training control with random search
+ctrl <- trainControl(method = "cv", number = 5, search = "random")
+
+# Train logistic regression
+set.seed(123)
+model_glm <- train(Label ~ ., data = train_data_final,
+                   method = "glm",
+                   family = "binomial",
+                   trControl = ctrl,
+                   tuneLength = 10)  # number of random combos
+
+summary(model_glm)
+model_glm$results
+model_glm$bestTune
+model_glm$finalModel
+#plot(model_glm)
+
+predict(model_glm, newdata = test_data_final)
+
+
+# Random forest
+set.seed(123)
+model_rf <- train(Label ~ ., data = train_data_final,
+                  method = "rf",
+                  trControl = ctrl,
+                  tuneLength = 10)  # random 10 sets of mtry
+
+print(model_rf)
+
+
+# XGBoost
+set.seed(123)
+model_xgb <- train(Label ~ ., data = train_data_final,
+                   method = "xgbTree",
+                   trControl = ctrl,
+                   tuneLength = 10)  # randomly sample 10 param combos
+
+print(model_xgb)
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Default
+# Logistic regression
 
 logistic_regression_train <- logistic_reg() %>%
   set_engine("glm") %>%
@@ -70,7 +91,6 @@ summary(lr_prediction_test)
 table(test_data_final$Label)
 
 #Confusion matrix
-library(caret)
 confusionMatrix(data=lr_prediction_test$.pred_class, reference = test_data_final$Label)
 
 
@@ -118,8 +138,8 @@ test_labels  <- as.numeric(as.factor(test_data_final$Label)) - 1
 train_matrix <- as.matrix(train_data_final[, setdiff(names(train_data_final), "Label")])
 test_matrix  <- as.matrix(test_data_final[, setdiff(names(test_data_final), "Label")])
 
-head(train_matrix)
-class(train_matrix)
+#head(train_matrix)
+#class(train_matrix)
 #class(train_matrix$kshviRK1210a)
 #class(train_matrix$Label)
 

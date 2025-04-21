@@ -1,4 +1,3 @@
-library(preprocessCore)
 library(readxl)
 library(writexl)
 
@@ -10,6 +9,69 @@ excel_data <- as.data.frame(excel_data)
 row.names(excel_data) <- excel_data[[1]]
 excel_data <- excel_data[, -1]
 head(excel_data)
+
+
+
+
+# !!! I think is the column we're trying 2 predict, so we would need to add
+# Label & change rows & columns here, instead of right before ML
+library(caret)
+
+# Outer loop: 5-fold CV
+outer_folds <- createFolds(excel_data$!!!, k = 5)
+
+# Store results
+results <- c()
+
+for (i in 1:5) {
+  test_idx <- outer_folds[[i]]
+  train_data <- excel_data[-test_idx, ]
+  test_data  <- excel_data[test_idx, ]
+  
+  # Inner loop: 3-fold CV for hyperparameter tuning
+  ctrl <- trainControl(method = "cv", number = 3)
+  
+  # Train with tuning
+  model <- train(
+    !!! ~ ., data = train_data,
+    method = "knn",  # example algorithm
+    tuneLength = 5,
+    trControl = ctrl
+  )
+  
+  # Evaluate on outer test set
+  predictions <- predict(model, test_data)
+  acc <- mean(predictions == test_data$!!!)
+  results[i] <- acc
+}
+
+mean(results)  # Final performance estimate
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Function to split dataset into training (70%) and testing (30%)
 split_dataset <- function(df, train_ratio = 0.7) {
