@@ -65,12 +65,6 @@ print(model_xgb)
 
 
 
-
-
-
-
-
-
 # Default
 # Logistic regression
 
