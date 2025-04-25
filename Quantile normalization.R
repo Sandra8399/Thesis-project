@@ -82,11 +82,26 @@ for (i in 1:5) {
   head(normalized_data$train)
   
   # Boxplot before and after normalization
-  par(mar = c(10, 4, 4, 2))
-  boxplot(as.matrix(train_df), main = paste("Before Normalization - Fold", i), las=2)
-  boxplot(as.matrix(normalized_data$train[,-1]), main = paste("After Normalization - Fold", i), las=2)
+  par(mar = c(10, 6, 4, 2))
   
+  boxplot(as.matrix(train_df),
+          main = paste("Before Normalization - Fold", i),
+          ylab = "Expression",
+          las = 2)
+  mtext("Samples", side = 1, line = 8)  # Increase 'line' to push further down
+  
+  
+  boxplot(as.matrix(normalized_data$train[,-1]),
+          main = paste("After Normalization - Fold", i),
+          ylab = "Expression",
+          las = 2)
+  mtext("Samples", side = 1, line = 8)  # Increase 'line' to push further down
+  
+  
+
   # Export data for the current fold
-  write_xlsx(normalized_data$train, paste0("normalized_train_fold", i, ".xlsx"))
-  write_xlsx(normalized_data$test, paste0("normalized_test_fold", i, ".xlsx"))
+  
+
+  write_xlsx(normalized_data$train, file.path("Quantile_normalization_output", paste0("normalized_train_fold_", i, ".xlsx")))
+  write_xlsx(normalized_data$test, file.path("Quantile_normalization_output", paste0("normalized_test_fold_", i, ".xlsx")))
 }
