@@ -18,6 +18,7 @@ The dataset underwent pre-processing including the removal of NA values, quantil
 - **Add node status.R** — R file that performs that adds lymph node status of each sample
 - **Adding_column_output** — Output folder after adding lymph node status column to the dataset
 - **ML.R** — Main script implementing the machine learning models (LR, RF, XGBoost)
+- **Balanced accurycy and ROC results** — Output folder containing balanced accuracy barplots and ROC curves from the MLs
 
 ## Technologies Used
 
