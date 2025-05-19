@@ -102,7 +102,6 @@ ggplot(all_performance_flat, aes(x = combo, y = balanced_accuracy)) +
 dev.off()
 
 # --- 2. ROC Curve for Best Model ---
-
 # Get best hyperparameters
 logreg_summary <- aggregate(balanced_accuracy ~ penalty + mixture, data = all_performance_flat, FUN = mean)
 best_logreg <- logreg_summary[which.max(logreg_summary$balanced_accuracy), ]
@@ -145,7 +144,8 @@ for (i in 1:5) {
 
 # Plot all 5 ROC curves
 png("Balanced accurycy and ROC results/lr_ROC_all_folds.png", width = 800, height = 600, res = 150)
-plot(roc_list_lr[[1]], col=1, lwd=2, main="ROC - Logistic Regression (All 5 Folds)")
+plot(roc_list_lr[[1]], main="ROC - Logistic Regression (All 5 Folds)", col=1, lwd=2)
+    
 for (i in 2:5) {
   plot(roc_list_lr[[i]], add=TRUE, col=i, lwd=2)
 }
@@ -154,6 +154,40 @@ legend("bottomright", legend=paste("Fold", 1:5), col=1:5, lwd=2)
 dev.off()
 
 
+
+# -- Confussion matrix --
+conf_matrix_list <- list()
+for (i in 1:5) {
+  # Load training and test data
+  train <- read_excel(paste0("Adding_column_output/training_dataset_final_fold_", i, ".xlsx"))
+  test <- read_excel(paste0("Adding_column_output/testing_dataset_final_fold_", i, ".xlsx"))
+  
+  # Clean and prep data
+  train <- as.data.frame(train); test <- as.data.frame(test)
+  train$Sample <- NULL; test$Sample <- NULL
+  train$Node_status <- as.factor(train$Node_status); test$Node_status <- as.factor(test$Node_status)
+  colnames(train)[colnames(train) == "Node_status"] <- "Label"
+  colnames(test)[colnames(test) == "Node_status"] <- "Label"
+  
+  # Fit model using best hyperparameters
+  model <- logistic_reg(
+    penalty = 0, mixture = 0.5) %>%
+    set_engine("glmnet") %>%
+    set_mode("classification") %>%
+    fit(Label ~ ., data = train)
+  
+  # Predict classes
+  predictions <- predict(model, new_data = test) %>%
+    bind_cols(test)
+  
+  # Compute confusion matrix
+  cm <- confusionMatrix(data = predictions$.pred_class, reference = predictions$Label)
+  
+  # Store in list
+  conf_matrix_list[[paste0("Fold_", i)]] <- cm
+}
+
+conf_matrix_list
 
 ############# Random forest ##################
 # Helper to clean names
@@ -387,6 +421,51 @@ for (i in 2:length(roc_list_rf)) {
 abline(a = 0, b = 1, lty = 2, col = "gray")
 legend("bottomright", legend = paste("Fold", 1:length(roc_list_rf)), col = 1:length(roc_list_rf), lwd = 2)
 dev.off()
+
+
+# -- Confussion matrix --
+rf_conf_matrix_list <- list()
+
+for (i in 1:5) {
+  # Load training and test data
+  train <- read_excel(paste0("Adding_column_output/training_dataset_final_fold_", i, ".xlsx"))
+  test <- read_excel(paste0("Adding_column_output/testing_dataset_final_fold_", i, ".xlsx"))
+
+  # Clean and prep data
+  train <- as.data.frame(train); test <- as.data.frame(test)
+  train$Sample <- NULL; test$Sample <- NULL
+  train$Node_status <- as.factor(train$Node_status); test$Node_status <- as.factor(test$Node_status)
+  colnames(train)[colnames(train) == "Node_status"] <- "Label"
+  colnames(test)[colnames(test) == "Node_status"] <- "Label"
+  
+  # Clean column and row names
+  colnames(train) <- clean_names(colnames(train))
+  rownames(train) <- clean_names(rownames(train))
+  colnames(test)  <- clean_names(colnames(test))
+  rownames(test)  <- clean_names(rownames(test))
+  
+  # Fit random forest using best hyperparameters
+  rf_best <- randomForest(
+    Label ~ ., 
+    data = train,
+    ntree = 500,
+    maxnodes = 10,
+    nodesize = 1,
+    sampsize = 50
+  )
+  
+  # Predict classes
+  rf_pred_class <- predict(rf_best, newdata = test, type = "response")
+  
+  # Compute confusion matrix
+  cm <- confusionMatrix(data = rf_pred_class, reference = test$Label)
+  
+  # Store confusion matrix
+  rf_conf_matrix_list[[paste0("Fold_", i)]] <- cm
+}
+
+# View results
+rf_conf_matrix_list
 
 
 
@@ -664,6 +743,76 @@ for (i in 2:5) {
 abline(a = 0, b = 1, lty = 2, col = "gray")
 legend("bottomright", legend = paste("Fold", 1:5), col = 1:5, lwd = 2)
 dev.off()
+
+# -- Confusion matrix --
+
+
+xgb_conf_matrix_list <- list()
+
+for (i in 1:5) {
+  # Load training and test data
+  train <- read_excel(paste0("Adding_column_output/training_dataset_final_fold_", i, ".xlsx"))
+  test <- read_excel(paste0("Adding_column_output/testing_dataset_final_fold_", i, ".xlsx"))
+  
+  # Clean and prep data
+  train <- as.data.frame(train); test <- as.data.frame(test)
+  train$Sample <- NULL; test$Sample <- NULL
+  train$Node_status <- as.factor(train$Node_status)
+  test$Node_status <- as.factor(test$Node_status)
+  
+  colnames(train)[colnames(train) == "Node_status"] <- "Label"
+  colnames(test)[colnames(test) == "Node_status"] <- "Label"
+  
+  # Clean column names
+  colnames(train) <- clean_names(colnames(train))
+  colnames(test) <- clean_names(colnames(test))
+  
+  # Ensure binary 0/1 labels
+  train_labels <- as.numeric(as.factor(train$Label)) - 1
+  test_labels <- as.numeric(as.factor(test$Label)) - 1
+  
+  # Create data matrices
+  train_matrix <- as.matrix(train[, setdiff(names(train), "Label")])
+  test_matrix <- as.matrix(test[, setdiff(names(test), "Label")])
+  dtrain <- xgb.DMatrix(data = train_matrix, label = train_labels)
+  dtest <- xgb.DMatrix(data = test_matrix, label = test_labels)
+  
+  # Fit model
+  set.seed(123)
+  xgb_model <- xgboost(
+    data = dtrain,
+    objective = "binary:logistic",
+    eval_metric = "auc",
+    nrounds = 50,
+    max_depth = 3,
+    eta = 0.6,
+    reg_alpha = 1,
+    reg_gamma = 0,
+    subsample = 1,
+    verbose = 0
+  )
+  
+  # Predict probabilities
+  xgb_probs <- predict(xgb_model, dtest)
+  
+  # Convert probabilities to class labels (0.5 threshold)
+  xgb_pred_class <- ifelse(xgb_probs >= 0.5, 1, 0)
+  
+  # Convert to factors to match original labels
+  pred_factor <- factor(xgb_pred_class, levels = c(0, 1))
+  truth_factor <- factor(test_labels, levels = c(0, 1))
+  
+  # Compute confusion matrix
+  cm <- confusionMatrix(data = pred_factor, reference = truth_factor)
+  
+  # Store confusion matrix
+  xgb_conf_matrix_list[[paste0("Fold_", i)]] <- cm
+}
+
+# View all confusion matrices
+xgb_conf_matrix_list
+
+
 
 
 
