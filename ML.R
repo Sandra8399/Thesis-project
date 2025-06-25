@@ -604,7 +604,7 @@ all_xgb_performance_flat$combo <- paste0(
 # Get top 10 combos based on mean balanced accuracy
 top_combos <- all_xgb_performance_flat %>%
   group_by(combo) %>%
-  summarise(mean_bal_acc = median(balanced_accuracy, na.rm = TRUE)) %>%
+  summarise(mean_bal_acc = mean(balanced_accuracy, na.rm = TRUE)) %>%
   arrange(desc(mean_bal_acc)) %>%
   slice_head(n = 10) %>%
   pull(combo)

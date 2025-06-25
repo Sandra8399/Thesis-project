@@ -58,7 +58,7 @@ for (i in 1:5) {
   # Histogram before standardization
   hist(training_data[[gene_to_plot]],
        main = paste("Histogram of", gene_to_plot, "- Fold", i, "(Before Z-Score)"),
-       xlab = "Expression Value",
+       xlab = "Expression",
        ylab = "Frequency",
        col = "lightblue")
   

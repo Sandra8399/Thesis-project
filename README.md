@@ -19,8 +19,12 @@ The dataset underwent pre-processing including the removal of NA values, quantil
 - **Adding_column_output** — Output folder after adding lymph node status column to the dataset
 - **ML.R** — Main script implementing the machine learning models (LR, RF, XGBoost)
 - **Balanced accurycy and ROC results** — Output folder containing balanced accuracy boxplot for LR, all ROC curves from the MLs, boxplot comparing the ROC values of the MLs, and barplot with ROC values of individual folds
-- **Balanced accurycy and ROC results** — Output folder containing all boxplots for RF
-- **Balanced accurycy and ROC results** — Output folder containing all boxplots for XGBoost
+- **rf_boxplots** — Output folder containing all boxplots for RF
+- **xgb_boxplots** — Output folder containing all boxplots for XGBoost
+- **Pre-processing whole dataset.R** — Script containing pre-processing for the full dataset
+- **Pre-processed_dataset.xlsx** — Excel file, output of Pre-processing whole dataset.R
+- **XGBoost_full_data.R** — Script XGBoost with best hyperparameters to identify most important miRNAs
+- **miRNA_names.xlsx** — Excel file, output of XGBoost_full_data, contains the important miRNAs and their importance values
 
 ## Technologies Used
 
