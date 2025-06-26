@@ -40,7 +40,7 @@ xgb_model <- xgboost(
 # Get importance values
 importance <- xgb.importance(feature_names = colnames(matrix), model = xgb_model)
 importance_plot <- xgb.plot.importance(importance_matrix = importance)
-
+head(importance)
 ggplot(importance_plot, aes(x = Importance, y = reorder(Feature, Importance))) +
   geom_bar(stat = "identity", fill = "steelblue") +
   xlab("Importance") +

@@ -1,0 +1,101 @@
+Pathway,Total,Expected,Hits,Pval,FDR
+Pathways in cancer,310,90.9,147,2.67e-12,2.67e-10
+RNA transport,126,37,68,4.07e-09,2.04e-07
+Prostate cancer,87,25.5,49,1.07e-07,3.57e-06
+HTLV-I infection,199,58.4,91,4.2e-07,1.05e-05
+p53 signaling pathway,68,19.9,37,1.17e-05,0.000203
+Chronic myeloid leukemia,73,21.4,39,1.22e-05,0.000203
+Cell cycle,124,36.4,58,2.41e-05,0.000344
+Focal adhesion,200,58.7,85,3.5e-05,0.000437
+Pancreatic cancer,69,20.2,36,5.15e-05,0.000572
+Salmonella infection,72,21.1,37,6.24e-05,0.000595
+T cell receptor signaling pathway,98,28.8,47,6.54e-05,0.000595
+Adherens junction,70,20.5,36,7.66e-05,0.000638
+Neurotrophin signaling pathway,123,36.1,56,8.51e-05,0.000655
+Herpes simplex infection,103,30.2,48,0.000135,0.000964
+Insulin signaling pathway,137,40.2,60,0.000186,0.00119
+Epstein-Barr virus infection,91,26.7,43,0.000203,0.00119
+Glioma,65,19.1,33,0.000208,0.00119
+Renal cell carcinoma,60,17.6,31,0.000214,0.00119
+Toll-like receptor signaling pathway,97,28.5,45,0.000246,0.00124
+Chagas disease (American trypanosomiasis),89,26.1,42,0.000248,0.00124
+Measles,102,29.9,46,0.000468,0.00223
+Lysine degradation,47,13.8,25,0.00049,0.00223
+Regulation of actin cytoskeleton,182,53.4,74,0.000571,0.00248
+Melanoma,68,19.9,33,0.000603,0.00251
+Colorectal cancer,49,14.4,25,0.0011,0.0044
+Hepatitis C,100,29.3,44,0.00116,0.00446
+ErbB signaling pathway,87,25.5,39,0.00142,0.00526
+Endocytosis,101,29.6,44,0.00148,0.00529
+Bacterial invasion of epithelial cells,56,16.4,27,0.00209,0.00721
+RIG-I-like receptor signaling pathway,49,14.4,24,0.0028,0.00933
+Influenza A,107,31.4,45,0.00308,0.00961
+Bladder cancer,29,8.51,16,0.00312,0.00961
+Non-small cell lung cancer,52,15.3,25,0.00317,0.00961
+Jak-STAT signaling pathway,99,29,42,0.00345,0.00989
+Shigellosis,47,13.8,23,0.00346,0.00989
+Small cell lung cancer,80,23.5,35,0.00401,0.0111
+Protein processing in endoplasmic reticulum,129,37.8,52,0.00447,0.0121
+TGF-beta signaling pathway,84,24.6,36,0.00535,0.0141
+Toxoplasmosis,93,27.3,39,0.00599,0.0154
+Acute myeloid leukemia,57,16.7,26,0.00642,0.0158
+mRNA surveillance pathway,82,24.1,35,0.00646,0.0158
+RNA degradation,60,17.6,27,0.00692,0.0165
+Viral myocarditis,26,7.63,14,0.00747,0.0174
+Wnt signaling pathway,144,42.2,56,0.0079,0.018
+Osteoclast differentiation,119,34.9,47,0.0104,0.0231
+NOD-like receptor signaling pathway,49,14.4,22,0.0145,0.0315
+Endometrial cancer,44,12.9,20,0.0166,0.0345
+Huntington's disease,28,8.21,14,0.0168,0.0345
+B cell receptor signaling pathway,75,22,31,0.0169,0.0345
+Basal cell carcinoma,47,13.8,21,0.0178,0.0356
+Hedgehog signaling pathway,56,16.4,24,0.0209,0.041
+mTOR signaling pathway,45,13.2,20,0.0218,0.0419
+Fc gamma R-mediated phagocytosis,97,28.5,38,0.0228,0.043
+Leishmaniasis,51,15,22,0.0243,0.045
+Legionellosis,40,11.7,18,0.0252,0.0458
+Pyrimidine metabolism,101,29.6,39,0.0271,0.0484
+Pathogenic Escherichia coli infection,35,10.3,16,0.0289,0.0507
+Pertussis,52,15.3,22,0.0307,0.0529
+Ribosome biogenesis in eukaryotes,55,16.1,23,0.0318,0.0539
+Axon guidance,118,34.6,44,0.0365,0.0608
+Hypertrophic cardiomyopathy (HCM),25,7.33,12,0.0372,0.061
+Thyroid cancer,28,8.21,13,0.041,0.066
+Glycolysis / Gluconeogenesis,65,19.1,26,0.0416,0.066
+Apoptosis,83,24.4,32,0.0434,0.0678
+Epithelial cell signaling in Helicobacter pylori infection,37,10.9,16,0.0495,0.0752
+Adipocytokine signaling pathway,63,18.5,25,0.0496,0.0752
+ECM-receptor interaction,84,24.6,32,0.0511,0.0763
+Parkinson's disease,18,5.28,9,0.0519,0.0763
+Cocaine addiction,43,12.6,18,0.0533,0.0772
+Tight junction,118,34.6,43,0.0553,0.079
+Prion diseases,21,6.16,10,0.0585,0.0824
+Melanogenesis,101,29.6,37,0.0666,0.0925
+Malaria,11,3.23,6,0.0707,0.0968
+Mucin type O-Glycan biosynthesis,30,8.8,13,0.0717,0.0969
+One carbon pool by folate,19,5.57,9,0.0737,0.0983
+Purine metabolism,163,47.8,56,0.0907,0.119
+Selenocompound metabolism,12,3.52,6,0.107,0.135
+Dorso-ventral axis formation,12,3.52,6,0.107,0.135
+Arrhythmogenic right ventricular cardiomyopathy (ARVC),12,3.52,6,0.107,0.135
+"Alanine, aspartate and glutamate metabolism",32,9.39,13,0.114,0.143
+Aminoacyl-tRNA biosynthesis,7,2.05,4,0.117,0.144
+Type II diabetes mellitus,48,14.1,18,0.139,0.17
+Transcriptional misregulation in cancer,19,5.57,8,0.165,0.199
+Aldosterone-regulated sodium reabsorption,34,9.97,13,0.169,0.199
+African trypanosomiasis,25,7.33,10,0.169,0.199
+MAPK signaling pathway,265,77.7,85,0.174,0.202
+Tuberculosis,174,51,57,0.177,0.203
+Regulation of autophagy,8,2.35,4,0.182,0.207
+Fc epsilon RI signaling pathway,75,22,26,0.185,0.208
+Glycosphingolipid biosynthesis - ganglio series,14,4.11,6,0.203,0.223
+Dopaminergic synapse,124,36.4,41,0.204,0.223
+Nicotinate and nicotinamide metabolism,26,7.63,10,0.206,0.223
+Cytosolic DNA-sensing pathway,20,5.87,8,0.207,0.223
+Morphine addiction,55,16.1,19,0.238,0.253
+Alzheimer's disease,49,14.4,17,0.248,0.261
+Alcoholism,166,48.7,53,0.253,0.264
+Glycosphingolipid biosynthesis - globo series,12,3.52,5,0.259,0.267
+Fatty acid metabolism,40,11.7,14,0.264,0.269
+Cholinergic synapse,95,27.9,31,0.272,0.275
+Progesterone-mediated oocyte maturation,80,23.5,26,0.303,0.303
